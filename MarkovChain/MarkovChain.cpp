@@ -13,14 +13,14 @@ public:
 	explicit MarkovWordGenerator(const std::vector<std::string>& words) {
 		for (const auto& word : words) {
 			std::string wrapped = startChar + word + endChar;
-			std::cout << "Processing word: " << wrapped << "\n";
 			for (size_t i = 0; i < wrapped.size() - 1; ++i) {
+				if (wrapped[i] == '-' || (wrapped[i] == '\n' && checkIfCharExist(transitions[wrapped[i]], '\n'))) continue;
 				transitions[wrapped[i]].push_back(wrapped[i + 1]);
 			}
 		}
 	}
 
-	std::string generate(int maxLength = 5) {
+	std::string generate(int maxLength = 10) {
 		std::string result;
 		char current = startChar;
 		while (result.length() < maxLength) {
@@ -33,27 +33,52 @@ public:
 		}
 		return result;
 	}
+
+private:
+	bool checkIfCharExist(std::vector<char>& vec, char c) {
+		return std::find(vec.begin(), vec.end(), c) != vec.end();
+	}
 };
 
 int main() {
 	srand(static_cast<unsigned>(time(0)));
 	std::vector<std::string> trainingWords = {
-	"flutter", "orchestra", "terminal", "alimony", "adjacent", "king", "man", "woman", "sleep", "night", "day",
-	"quantum", "zephyr", "glimmer", "anchor", "breeze", "cipher", "cascade", "dawn", "ember", "fractal",
-	"galaxy", "harmony", "ignite", "jovial", "kettle", "lunar", "moment", "nectar", "oracle", "prism",
-	"quartz", "ripple", "sylvan", "thrust", "umbra", "vortex", "wander", "xenon", "yonder", "zenith",
-	"bramble", "crimson", "drizzle", "evoke", "flicker", "glisten", "howl", "incant", "jungle", "kismet",
-	"liminal", "murmur", "nimbus", "opaque", "pebble", "quiver", "rustle", "shiver", "trickle", "untold",
-	"velvet", "wither", "xylem", "yearn", "zodiac", "autumn", "blossom", "cloister", "dormant", "elixir",
-	"feral", "groove", "hollow", "illusion", "jester", "knight", "lantern", "mirage", "nuzzle", "obscure",
-	"plume", "quaint", "relic", "serene", "tangle", "updraft", "vista", "wisp", "xanadu", "yield",
-	"zealot", "arcane", "bounty", "chime", "dapple", "ethereal", "flare", "glide", "hatch", "inkling"
+	"The wind it hums a gentle tune,",
+	"Across the hills, beneath the moon.",
+	"It stirs the leaves with secret sighs,",
+	"And dances low through midnight skies.",
+	"It wanders through the fields alone,",
+	"It whistles through the broken stone.",
+	"Among the trees, it softly speaks,",
+	"In voices lost to hollow peaks.",
+	"It tells of stars and distant shores,",
+	"Of ships that sail and open doors.",
+	"Of ancient dreams and fallen kings,",
+	"Of all forgotten, whispered things.",
+	"It brushes past the windowpane,",
+	"A lullaby in autumn rain.",
+	"It carries tales of love and loss,",
+	"Of bridges burned and paths we cross.",
+	"It finds the places we forget,",
+	"Where hope and fear and longing met.",
+	"It stirs the ashes, wakes the flame,",
+	"And softly calls out every name.",
+	"It lingers close on sleepless nights,",
+	"It turns our thoughts to ghostly lights.",
+	"And as we drift in shadowed sleep,",
+	"Its stories root themselves so deep.",
+	"So when you feel it stroke your face,",
+	"A fleeting breeze, a warm embrace—",
+	"Just close your eyes and you may hear,",
+	"The voice that draws your soul so near."
 	};
+
+
 
 	MarkovWordGenerator generator(trainingWords);
 	std::cout << "Generated words:\n";
-	for (int i = 0; i < 20; ++i) {
-		std::cout << generator.generate() << "\n";
+	for (int i = 0; i < 100; ++i) {
+		std::cout << generator.generate() << " ";
 	}
 	return 0;
 }
